@@ -1,0 +1,5 @@
+C:\code\dev\projects\SimpleCmdLine\SimpleCmdLine\bin\Release\SimpleCmdLine.dll
+C:\code\dev\projects\SimpleCmdLine\SimpleCmdLine\bin\Release\SimpleCmdLine.pdb
+C:\code\dev\projects\SimpleCmdLine\SimpleCmdLine\obj\Release\SimpleCmdLine.csprojResolveAssemblyReference.cache
+C:\code\dev\projects\SimpleCmdLine\SimpleCmdLine\obj\Release\SimpleCmdLine.dll
+C:\code\dev\projects\SimpleCmdLine\SimpleCmdLine\obj\Release\SimpleCmdLine.pdb

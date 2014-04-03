@@ -1,0 +1,7 @@
+C:\code\dev\projects\SimpleCmdLine\Tests\bin\Debug\Tests.dll
+C:\code\dev\projects\SimpleCmdLine\Tests\bin\Debug\Tests.pdb
+C:\code\dev\projects\SimpleCmdLine\Tests\bin\Debug\SimpleCmdLine.dll
+C:\code\dev\projects\SimpleCmdLine\Tests\bin\Debug\SimpleCmdLine.pdb
+C:\code\dev\projects\SimpleCmdLine\Tests\obj\Debug\Tests.csprojResolveAssemblyReference.cache
+C:\code\dev\projects\SimpleCmdLine\Tests\obj\Debug\Tests.dll
+C:\code\dev\projects\SimpleCmdLine\Tests\obj\Debug\Tests.pdb
