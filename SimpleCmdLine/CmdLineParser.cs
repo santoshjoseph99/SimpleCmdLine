@@ -27,6 +27,7 @@ namespace SonicComputing
         private Dictionary<string, string> _help = new Dictionary<string, string>();
         private List<string> _longOpts = new List<string>();
         private Dictionary<string, string> _shortToLongOpts = new Dictionary<string, string>();
+        private Dictionary<string, string> _longToShortOpts = new Dictionary<string, string>();
         private Dictionary<string, Type> _optTypes = new Dictionary<string, Type>();
         private List<string> _longOptsSet = new List<string>();
 
@@ -55,6 +56,7 @@ namespace SonicComputing
                     throw new ArgumentException();
                 }
                 _shortToLongOpts[shortOptName] = longOptName;
+                _longToShortOpts[longOptName] = shortOptName;
             }
             if( _longOpts.Contains(longOptName))
             {
@@ -185,7 +187,32 @@ namespace SonicComputing
 
         private string GenerateHelpMsg()
         {
+            var nl = Environment.NewLine;
+            var result =  "Usage:" + nl;
+            var longest = _longOpts.Select(x => x.Length).Max()+3;
+            foreach (var h in _help)
+            {
+                var numSpaces = h.Key.Length - longest + 1;
+                result += "--" + h.Key + GetShortOption(h.Key) + ":" + GetSpaces(numSpaces) + h.Value + nl;
+            }
+            return result;
+        }
+
+        private string GetShortOption(string longOpt)
+        {
+            if (_longToShortOpts.ContainsKey(longOpt))
+                return ",-" + _longToShortOpts[longOpt];
             return string.Empty;
+        }
+
+        private string GetSpaces(int n)
+        {
+            var str = "";
+            for (var i = 0; i < n; i++)
+            {
+                str += " ";
+            }
+            return str;
         }
     }
 
