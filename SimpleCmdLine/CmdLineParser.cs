@@ -25,13 +25,10 @@ namespace SonicComputing
         public dynamic Opts = new DynamicDictionary();
         private Dictionary<string, bool> _required = new Dictionary<string, bool>();
         private Dictionary<string, string> _help = new Dictionary<string, string>();
-        //private Dictionary<string, string> _longOptValues = new Dictionary<string, string>();
-        //private Dictionary<string, string> _shortOptValues = new Dictionary<string, string>();
         private List<string> _longOpts = new List<string>();
-        private List<string> _shortOpts = new List<string>();
+        private Dictionary<string, string> _shortToLongOpts = new Dictionary<string, string>();
         private Dictionary<string, Type> _optTypes = new Dictionary<string, Type>();
         private List<string> _longOptsSet = new List<string>();
-        private List<string> _shortOptsSet = new List<string>();
 
         public void Setup<T>(string spec, bool required = true, string helpMsg = "")
         {
@@ -53,11 +50,11 @@ namespace SonicComputing
                 {
                     throw new ArgumentException();
                 }
-                if(_shortOpts.Contains(shortOptName))
+                if(_shortToLongOpts.ContainsKey(shortOptName))
                 {
                     throw new ArgumentException();
                 }
-                _shortOpts.Add(shortOptName);
+                _shortToLongOpts[shortOptName] = longOptName;
             }
             if( _longOpts.Contains(longOptName))
             {
@@ -67,7 +64,6 @@ namespace SonicComputing
             _optTypes[longOptName] = typeof(T);
             _required[longOptName] = required;
             _help[longOptName] = helpMsg;
-
         }
 
         public void Parse(string[] args)
@@ -78,7 +74,28 @@ namespace SonicComputing
             if(args.Contains("--help") || args.Contains("-h"))
                 throw new ParseException("Usage:", GenerateHelpMsg());
 
-            //convert short opts to long opts?
+            for (int i = 0; i < args.Length; i++)
+            {
+                if(IsShortOpt(args[i]))
+                {
+                    var shortOptName = GetShortOptName(args[i]);
+                    if (_shortToLongOpts.ContainsKey(shortOptName))
+                        args[i] = "--" + _shortToLongOpts[shortOptName];
+                    else
+                        throw new ParseException("Invalid option:" + shortOptName);
+                    if (_optTypes[_shortToLongOpts[shortOptName]].Name != "Boolean")
+                        i = i + 1;
+                }
+                else if (IsLongOpt(args[i]))
+                {
+                    if (!IsValidOpt(GetLongOptName(args[i])))
+                        throw new ParseException("Invalid Option:", GenerateHelpMsg());
+                    if (_optTypes[GetLongOptName(args[i])].Name != "Boolean")
+                        i = i + 1;
+                }
+                if (i > args.Length)
+                    break;
+            }
 
             for (int i = 0; i < args.Length; i++)
             {
@@ -102,6 +119,7 @@ namespace SonicComputing
                             throw new ParseException("Missing value for option:" + longOptName);
                         Opts.TrySetMember(new MyMemberBinder(longOptName),
                             GetValue(longOptName, args[i + 1]));
+                        i = i + 1;
                     }
                 }
             }
@@ -141,6 +159,13 @@ namespace SonicComputing
         private bool IsLongOpt(string option)
         {
             return option.StartsWith("--");
+        }
+
+        private bool IsShortOpt(string option)
+        {
+            if (option[0] == '-' && option[1] != '-')
+                return true;
+            return false;
         }
 
         private bool IsValidOpt(string option)
