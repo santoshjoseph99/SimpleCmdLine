@@ -11,7 +11,7 @@ namespace Tests
     public class WhenParsingOptions
     {
         [TestMethod]
-        [ExpectedException(typeof(ParseException))]
+        [ExpectedException(typeof(CmdLineParserException))]
         public void Option_Is_Required_No_Options_Passed_In()
         {
             var sut = new CmdLineParser();
@@ -22,7 +22,7 @@ namespace Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ParseException))]
+        [ExpectedException(typeof(CmdLineParserException))]
         public void Option_Is_Required_But_Not_Specified()
         {
             var sut = new CmdLineParser();
@@ -33,7 +33,7 @@ namespace Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ParseException))]
+        [ExpectedException(typeof(CmdLineParserException))]
         public void Option_Required_Is_Not_Set()
         {
             var sut = new CmdLineParser();
@@ -67,7 +67,7 @@ namespace Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ParseException))]
+        [ExpectedException(typeof(CmdLineParserException))]
         public void Only_Help_Option_Specified()
         {
             var sut = new CmdLineParser();
@@ -77,18 +77,18 @@ namespace Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ParseException))]
+        [ExpectedException(typeof(CmdLineParserException))]
         public void Help_Option_Specified_With_Other_Options()
         {
             var sut = new CmdLineParser();
 
             sut.Setup<int>("option1,1", true, "Help for option1");
-            sut.Setup<int>("option1,2", true, "Help for option2");
+            sut.Setup<int>("option2,2", true, "Help for option2");
             sut.Parse(new[] { "--option1", "--help" });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ParseException))]
+        [ExpectedException(typeof(CmdLineParserException))]
         public void Help_Option_With_Various_Help_Messages()
         {
             var sut = new CmdLineParser();
@@ -131,7 +131,7 @@ namespace Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ParseException))]
+        [ExpectedException(typeof(CmdLineParserException))]
         public void Option_Specified_Twice_Throws_Exception()
         {
             var sut = new CmdLineParser();
@@ -142,7 +142,7 @@ namespace Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ParseException))]
+        [ExpectedException(typeof(CmdLineParserException))]
         public void Illegal_Value_For_Option_Specified()
         {
             var sut = new CmdLineParser();
@@ -181,7 +181,7 @@ namespace Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ParseException))]
+        [ExpectedException(typeof(CmdLineParserException))]
         public void Single_Option_Specified_But_No_Value()
         {
             var sut = new CmdLineParser();
@@ -192,7 +192,7 @@ namespace Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ParseException))]
+        [ExpectedException(typeof(CmdLineParserException))]
         public void Multiple_Options_Specified_But_No_Value()
         {
             var sut = new CmdLineParser();
@@ -210,7 +210,7 @@ namespace Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ParseException))]
+        [ExpectedException(typeof(CmdLineParserException))]
         public void Custom_Type_Cannot_Parse()
         {
             var sut = new CmdLineParser();
@@ -230,7 +230,7 @@ namespace Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ParseException))]
+        [ExpectedException(typeof(CmdLineParserException))]
         public void Custom_Type_With_Parse_Method()
         {
             var sut = new CmdLineParser();

@@ -12,7 +12,7 @@ namespace Tests
     public class WhenSettingOptions
     {
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(CmdLineParserException))]
         public void EmptyOptionName_Throws_Exception()
         {
             var sut = new CmdLineParser();
@@ -20,7 +20,7 @@ namespace Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(CmdLineParserException))]
         public void MalformedSpec_NoShortOption_Throws_Exception()
         {
             var sut = new CmdLineParser();
@@ -28,7 +28,7 @@ namespace Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(CmdLineParserException))]
         public void MalformedSpec_NoLongOption_Throws_Exception()
         {
             var sut = new CmdLineParser();
@@ -36,7 +36,7 @@ namespace Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(CmdLineParserException))]
         public void Setting_The_Same_LongOption_Twice_Throws_Exception()
         {
             var sut = new CmdLineParser();
@@ -45,7 +45,7 @@ namespace Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(CmdLineParserException))]
         public void Setting_The_Same_ShortOption_Twice_Throws_Exception()
         {
             var sut = new CmdLineParser();
