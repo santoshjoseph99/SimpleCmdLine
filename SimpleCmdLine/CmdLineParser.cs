@@ -77,13 +77,26 @@ namespace SonicComputing
             _optTypes[longOptName] = typeof(T);
             _required[longOptName] = required;
             _help[longOptName] = helpMsg;
+
+            if(!required)
+            {
+                object result;
+                if(!Opts.TryGetMember(new MyGetMemberBinder(longOptName), out result))
+                {
+                    if (typeof(T).Name == "String")
+                    {
+                        Opts.TrySetMember(new MySetMemberBinder(longOptName), "");
+                    }
+                    else
+                    {
+                        Opts.TrySetMember(new MySetMemberBinder(longOptName), default(T));
+                    }
+                }
+            }
         }
 
         public void Parse(string[] args)
         {
-            //if (args.Length == 0 && _required.Any(kv => { return kv.Value; }))
-            //    throw new ParseException("Required option(s) not present:", GenerateHelpMsg());
-
             CheckForHelpOpt(args);
 
             ConvertShortOptsToLongOpts(args);
@@ -111,7 +124,7 @@ namespace SonicComputing
                    .Select(x => x.Key)
                    .Except(_longOptsSet)
                    .ToList()
-                   .ForEach(x => Opts.TrySetMember(new MyMemberBinder(x), false));
+                   .ForEach(x => Opts.TrySetMember(new MySetMemberBinder(x), false));
         }
 
         private void SetOptions(string[] args)
@@ -130,14 +143,14 @@ namespace SonicComputing
 
                     if (_optTypes[longOptName].Name == "Boolean")
                     {
-                        Opts.TrySetMember(new MyMemberBinder(longOptName), true);
+                        Opts.TrySetMember(new MySetMemberBinder(longOptName), true);
                     }
                     else
                     {
                         if (i + 1 >= args.Length)
                             throw new CmdLineParserException("Missing value for option:" + longOptName);
-                        Opts.TrySetMember(new MyMemberBinder(longOptName),
-                            GetValue(longOptName, args[i + 1]));
+                        Opts.TrySetMember(new MySetMemberBinder(longOptName),
+                            SetValue(longOptName, args[i + 1]));
                         i = i + 1;
                     }
                 }
@@ -176,7 +189,7 @@ namespace SonicComputing
                 throw new CmdLineParserException("", GenerateHelpMsg());
         }
 
-        private object GetValue(string optName, string value)
+        private object SetValue(string optName, string value)
         {
             var type = _optTypes[optName];
             if (type.Name == "String")
@@ -255,13 +268,26 @@ namespace SonicComputing
         }
     }
 
-    class MyMemberBinder : SetMemberBinder
+    class MySetMemberBinder : SetMemberBinder
     {
-        public MyMemberBinder(string name)
+        public MySetMemberBinder(string name)
             : base(name, false)
         {
         }
         public override DynamicMetaObject FallbackSetMember(DynamicMetaObject target, DynamicMetaObject value, DynamicMetaObject errorSuggestion)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    class MyGetMemberBinder : GetMemberBinder
+    {
+        public MyGetMemberBinder(string name) : base(name, false)
+        {
+
+        }
+
+        public override DynamicMetaObject FallbackGetMember(DynamicMetaObject target, DynamicMetaObject errorSuggestion)
         {
             throw new NotImplementedException();
         }

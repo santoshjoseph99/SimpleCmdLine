@@ -375,5 +375,18 @@ namespace Tests
             Assert.AreEqual("abc", sut.Opts.option2);
             Assert.AreEqual(true, sut.Opts.option3);
         }
+
+        [TestMethod]
+        public void Accessing_Unrequired_Option_Which_Is_Not_Specified()
+        {
+            var sut = new CmdLineParser();
+
+            sut.Setup<int>("option1", false);
+            sut.Setup<int>("option2");
+            sut.Parse(new[] { "--option2", "33" });
+
+            Assert.AreEqual(33, sut.Opts.option2);
+            Assert.AreEqual(0, sut.Opts.option1);
+        }
     }
 }
