@@ -74,7 +74,7 @@ namespace SonicComputing
                 throw new ParseException("Required option(s) not present:", GenerateHelpMsg());
 
             if(args.Contains("--help") || args.Contains("-h"))
-                throw new ParseException("Usage:", GenerateHelpMsg());
+                throw new ParseException("", GenerateHelpMsg());
 
             for (int i = 0; i < args.Length; i++)
             {
@@ -189,30 +189,33 @@ namespace SonicComputing
         {
             var nl = Environment.NewLine;
             var result =  "Usage:" + nl;
-            var longest = _longOpts.Select(x => x.Length).Max()+3;
+            var longest = _longOpts.Select(x => x.Length).Max();
             foreach (var h in _help)
             {
-                var numSpaces = h.Key.Length - longest + 1;
-                result += "--" + h.Key + GetShortOption(h.Key) + ":" + GetSpaces(numSpaces) + h.Value + nl;
+                var numSpaces = longest - h.Key.Length;
+                if (numSpaces != 0) numSpaces += 1;
+                result += "--" + h.Key + GetShortOpt(h.Key) + ":" + GetSpaces(numSpaces) + h.Value + nl;
             }
             return result;
         }
 
-        private string GetShortOption(string longOpt)
+        private string GetShortOpt(string longOpt)
         {
             if (_longToShortOpts.ContainsKey(longOpt))
                 return ",-" + _longToShortOpts[longOpt];
-            return string.Empty;
+            return "   ";
         }
 
         private string GetSpaces(int n)
         {
-            var str = "";
-            for (var i = 0; i < n; i++)
-            {
-                str += " ";
-            }
-            return str;
+            if (n == 0) return " ";
+            return Enumerable.Range(0, n).Select(x => " ").Aggregate((a, b) => a + " ");
+            //var str = "";
+            //for (var i = 0; i < n; i++)
+            //{
+            //    str += " ";
+            //}
+            //return str;
         }
     }
 

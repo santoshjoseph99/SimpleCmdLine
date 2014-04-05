@@ -72,7 +72,7 @@ namespace Tests
         {
             var sut = new CmdLineParser();
 
-            sut.Setup<int>("option,o");
+            sut.Setup<int>("option,o", true, "Help for option1");
             sut.Parse(new[] { "--help" });
         }
 
@@ -82,11 +82,24 @@ namespace Tests
         {
             var sut = new CmdLineParser();
 
-            sut.Setup<int>("option1,1");
-            sut.Setup<int>("option2,2");
+            sut.Setup<int>("option1,1", true, "Help for option1");
+            sut.Setup<int>("option1,2", true, "Help for option2");
             sut.Parse(new[] { "--option1", "--help" });
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(ParseException))]
+        public void Help_Option_With_Various_Help_Messages()
+        {
+            var sut = new CmdLineParser();
+
+            sut.Setup<int>("option1,1", true, "Help for option1");
+            sut.Setup<int>("opt,2", true, "Help");
+            sut.Setup<int>("reallylongoption1,3", true, "Short help msg");
+            sut.Setup<int>("oooo,4", true, "Really long help message that means nothing");
+            sut.Parse(new[] { "--option1", "--help" });
+        }
+        
         [TestMethod]
         public void Default_Value_For_Option_Set_And_Option_Not_Specified()
         {
