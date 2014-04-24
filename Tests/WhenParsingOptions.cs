@@ -53,6 +53,9 @@ namespace Tests
             sut.Setup<int>("notrequired2", false);
 
             sut.Parse(new string[] { });
+
+            Assert.AreEqual(sut.Opts.notrequired1, 0);
+            Assert.AreEqual(sut.Opts.notrequired2, 0);
         }
 
         [TestMethod]
@@ -387,6 +390,56 @@ namespace Tests
 
             Assert.AreEqual(33, sut.Opts.option2);
             Assert.AreEqual(0, sut.Opts.option1);
+        }
+
+        [TestMethod]
+        public void Creating_ArrayOptions()
+        {
+            var sut = new CmdLineParser();
+
+            sut.Setup<int[]>("option");
+            sut.Parse(new[]{"--option", "1,2,3,4,5"});
+
+            Assert.AreEqual(sut.Opts.option[0], 1);
+            Assert.AreEqual(sut.Opts.option[1], 2);
+            Assert.AreEqual(sut.Opts.option[2], 3);
+            Assert.AreEqual(sut.Opts.option[3], 4);
+            Assert.AreEqual(sut.Opts.option[4], 5);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(CmdLineParserException))]
+        public void Creating_ArrayOptions_With_BadInput()
+        {
+            var sut = new CmdLineParser();
+
+            sut.Setup<int[]>("option");
+            sut.Parse(new[] { "--option", "1,2,3,4,abc" });
+        }
+
+        [TestMethod]
+        public void Creating_ArrayOptions_NotRequired()
+        {
+            var sut = new CmdLineParser();
+
+            sut.Setup<int[]>("option", false);
+            sut.Parse(new string[]{});
+
+            Assert.AreEqual(sut.Opts.option.Length, 0);
+        }
+
+        [TestMethod]
+        public void Creating_VerbStyle_Option()
+        {
+            //var sut = new CmdLineParser();
+
+            //sut.SetupVerb("verb");
+            //sut.SetupVerb<string>("verb", "option1,1");
+            //sut.SetupVerb<int>("verb", "option2,2");
+            //sut.Parse(new[] { "main", "--option1", "abc", "--option2", "3" });
+
+            //Assert.AreEqual(sut.Opts.main.option1, "abc");
+            //Assert.AreEqual(sut.Opts.main.option2, 3);
         }
     }
 }

@@ -87,6 +87,12 @@ namespace SonicComputing
                     {
                         Opts.TrySetMember(new MySetMemberBinder(longOptName), "");
                     }
+                    else if (typeof(T).Name.Contains("[]"))
+                    {
+                        var t = typeof(T).GetElementType();
+                        var y = Array.CreateInstance(t, 0);
+                        Opts.TrySetMember(new MySetMemberBinder(longOptName), y);
+                    }
                     else
                     {
                         Opts.TrySetMember(new MySetMemberBinder(longOptName), default(T));
@@ -145,6 +151,20 @@ namespace SonicComputing
                     {
                         Opts.TrySetMember(new MySetMemberBinder(longOptName), true);
                     }
+                    else if(_optTypes[longOptName].Name.Contains("[]"))
+                    {
+                        if (i + 1 >= args.Length)
+                            throw new CmdLineParserException("Missing value for option:" + longOptName);
+                        var values = args[i + 1].Split(',');
+                        var type = _optTypes[longOptName].GetElementType();
+                        var array = Array.CreateInstance(type, values.Length);
+                        for (int x = 0; x < values.Length; x++ )
+                        {
+                            array.SetValue(ParseValue(type,values[x]), x);
+                        }
+                        Opts.TrySetMember(new MySetMemberBinder(longOptName),  array);
+                        i = i + 1;
+                    }
                     else
                     {
                         if (i + 1 >= args.Length)
@@ -187,6 +207,19 @@ namespace SonicComputing
         {
             if (args.Contains("--help") || args.Contains("-h"))
                 throw new CmdLineParserException("", GenerateHelpMsg());
+        }
+
+        private object ParseValue(Type type, string value)
+        {
+            var method = type.GetMethod("Parse", new[] { typeof(string) });
+            try
+            {
+                return method.Invoke(type, new[] { value });
+            }
+            catch (Exception)
+            {
+                throw new CmdLineParserException("Illegal value for array option");
+            }
         }
 
         private object SetValue(string optName, string value)
