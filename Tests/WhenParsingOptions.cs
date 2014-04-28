@@ -408,6 +408,18 @@ namespace Tests
         }
 
         [TestMethod]
+        public void Creating_ArrayOptions_OneOptionForArray_Specified()
+        {
+            var sut = new CmdLineParser();
+
+            sut.Setup<string[]>("option");
+            sut.Parse(new[]{"--option", "abc"});
+
+            Assert.AreEqual(sut.Opts.option[0], "abc");
+            Assert.AreEqual(sut.Opts.option.Length, 1);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(CmdLineParserException))]
         public void Creating_ArrayOptions_With_BadInput()
         {

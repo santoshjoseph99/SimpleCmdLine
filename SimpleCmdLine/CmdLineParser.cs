@@ -18,6 +18,11 @@ namespace SonicComputing
         {
             HelpMessage = helpMsg;
         }
+
+        public override string ToString()
+        {
+            return Message + Environment.NewLine + HelpMessage;
+        }
     }
 
     public class CmdLineParser
@@ -211,6 +216,10 @@ namespace SonicComputing
 
         private object ParseValue(Type type, string value)
         {
+            if (type.Name == "String")
+            {
+                return value;
+            }
             var method = type.GetMethod("Parse", new[] { typeof(string) });
             try
             {
